@@ -187,7 +187,7 @@ class Utils {
      *
      *
      */
-
+    
     public static function saveFile($input, $fileName){
 		$fh = fopen($fileName, 'w') or die("can't open file");
 		fwrite($fh, $input);
@@ -205,26 +205,26 @@ class Utils {
 	public static function ValidateOutput($result)
 	{
 		$string = (string)$result;
-		
-		$validate = array("Unknown file format.", "Unable to read beyond the end of the stream", 
-		"Index was out of range", "Cannot read that as a ZipFile", "Not a Microsoft PowerPoint 2007 presentation",
-		"Index was outside the bounds of the array", "An attempt was made to move the position before the beginning of the stream",
-		);
-		
-		$invalid = 0;
-		foreach ($validate as $key => $value) {
-			$pos = strpos($string, $value);
-			 
-			if ($pos === 1)
-			{
-				$invalid = 1;
-			}
-		}
-		 
-		if($invalid == 1)
-		   return $string;
-		else
-		   return "";
+		switch($string) {
+		    case "Unknown file format.":
+	        case "Unable to read beyond the end of the stream":
+            case "Index was out of range":
+            case "Cannot read that as a ZipFile":
+            case "Not a Microsoft PowerPoint 2007 presentation":
+            case "Index was outside the bounds of the array":
+            case "An attempt was made to move the position before the beginning of the stream":
+            case preg_match("/File .* is not found./", $string) == 1:
+                $error = TRUE;
+                break;
+            default:
+                $error = FALSE;
+                break;
+	    }
+	    if ($error) {
+	        return $string;
+	    } else {
+	        return "";
+	    }
 	}
 }
 ?>
